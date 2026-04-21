@@ -1,0 +1,30 @@
+name: Convert .side to XML
+
+on:
+  push:
+    paths:
+      - "**/*.side"
+
+jobs:
+  build-xml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Convert .side to XML
+        run: python convert_side_to_xml.py
+
+      - name: Commit XML file
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add output.xml
+          git commit -m "Auto update XML from .side" || echo "No changes"
+          git push
